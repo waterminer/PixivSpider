@@ -21,7 +21,7 @@ def menu_2():
             else:
                 print("选项错误！\n")
                 menu_2()
-            data.get_rank_picture_source(database, proxy)
+            data.get_rank_picture_source(database, proxy, num)
         else:
             print("输入的值超出范围！\n")
             menu_2()
