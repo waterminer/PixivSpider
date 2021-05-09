@@ -17,10 +17,11 @@ artist_re = re.compile(r'data-user-name="(.*?)"')
 view_count_re = re.compile(r'data-view-count="(.*?)"')
 id_re = re.compile(r'data-id="(.*?)"')
 original_re = re.compile(r'"original":"(.*?)"')
+ext_re = re.compile(r'(jpg|png|gif)')
 
 
 def get_rank(proxies, num, database={}):
-    for i in range(1, num+1):
+    for i in range(1, num + 1):
         i = str(i)
         rank_url = 'https://www.pixiv.net/ranking.php?p=' + i
         req = connect.ask_url(rank_url, proxies)
@@ -50,11 +51,11 @@ def get_rank(proxies, num, database={}):
     return database
 
 
-def save(picture, name):
+def save(picture, name, ext):
     print("正在保存这张图： " + name)
     if not os.path.exists(path):
         os.makedirs('Downloads')
-    save_path = path + '/' + str(name) + '.jpg'
+    save_path = path + '/' + str(name) + '.' + ext
     with open(save_path, 'wb') as fp:
         try:
             fp.write(picture)
@@ -71,13 +72,17 @@ def get_rank_picture_source(database, proxies, switch=0):
         i = 0
         if switch == 0:
             url = json_obj['body'][0]['urls']['original']
+            ext = re.findall(ext_re, url)[0]
             picture = connect.ask_url(url, proxies)
-            save(picture.content, artworks_id + "_" + str(i))
+            name = str(artworks_id + "_" + str(i))
+            save(picture.content, name, ext)
         elif switch == 1:
             for urls_list in json_obj['body']:
                 url = urls_list['urls']['original']
+                ext = re.findall(ext_re, url)[0]
                 picture = connect.ask_url(url, proxies)
-                save(picture.content, artworks_id + "_" + str(i))
+                name = str(artworks_id + "_" + str(i))
+                save(picture.content, name, ext)
                 i = i + 1
         else:
             print("选项错误！")
@@ -92,6 +97,7 @@ def get_picture_source(artworks_id, proxies):
     i = 0
     for urls_list in json_obj['body']:
         url = urls_list['urls']['original']
-        picture = connect.ask_url(url, proxies)
+        ext = re.findall(ext_re, url)[0]
+        picture = connect.ask_url(url, proxies, ext)
         save(picture.content, artworks_id + "_" + str(i))
         i = i + 1
