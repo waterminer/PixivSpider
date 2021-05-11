@@ -31,6 +31,7 @@ def menu_2():
         data.get_picture_source(artworks_id, proxy)
 
 
+"""
 def menu():
     # 登录菜单
     temp = input('请选择登录方式（0～1）\n1.账号登录\n2.cookie登录\n3.游客登录\n0.退出\n')
@@ -41,7 +42,7 @@ def menu():
         connect.account_login()
     elif i == 2:
         connect.cookies_login()
-        data.get_rank()
+        data.get_rank(),
         exit(0)
     elif i == 3:
         print("功能尚未实现")
@@ -49,7 +50,7 @@ def menu():
     else:
         print("错误输入！")
         exit(1)
-
+"""
 
 if __name__ == '__main__':
     print("正在初始化")

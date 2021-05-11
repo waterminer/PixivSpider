@@ -1,13 +1,14 @@
 from _datetime import datetime
+
+import pytz
 from bs4 import BeautifulSoup
 from src import connect
 import os
 import re
 import json
 
-now = datetime.now()
-time = now.strftime("%Y%m%d_%H%M%S")
-date_now = now.strftime("%Y%m%d")
+time_zone = pytz.timezone('Asia/Tokyo')
+now = datetime.now(time_zone)
 path = './Downloads'
 # 提取规则
 rank_re = re.compile(r'data-rank="(.*?)"')
@@ -20,10 +21,20 @@ original_re = re.compile(r'"original":"(.*?)"')
 ext_re = re.compile(r'(jpg|png|gif)')
 
 
-def get_rank(proxies, num, database={}):
+def get_date_now():
+    time_temp = now.hour
+    if time_temp < 12:
+        date_now = datetime(now.year, now.month, now.day - 2)
+    else:
+        date_now = datetime(now.year, now.month, now.day)
+    date_now = date_now.strftime("%Y%m%d")
+    return date_now
+
+
+def get_rank(proxies, num, date=get_date_now(), database={}):
     for i in range(1, num + 1):
         i = str(i)
-        rank_url = 'https://www.pixiv.net/ranking.php?p=' + i
+        rank_url = 'https://www.pixiv.net/ranking.php?p=' + i + "&date=" + date
         req = connect.ask_url(rank_url, proxies)
         rank_bs = BeautifulSoup(req.text, "lxml")
         for section in rank_bs.find_all("section", class_="ranking-item"):
@@ -43,11 +54,9 @@ def get_rank(proxies, num, database={}):
                 'view': view
             }
             database[artworks_id] = item_data
-            '''
             # 以下用于检查输出结果
-            print("#" + rank + "\ntitle: " + title + "\nartist: " + artist + "\nid: " + id + "\ndate: " + date + 
-                  "\nview: " + view + "\n") 
-            '''
+            # print("#" + rank + "\ntitle: " + title + "\nartist: " + artist + "\nid: " + id + "\ndate: " + date +
+            #       "\nview: " + view + "\n")
     return database
 
 
