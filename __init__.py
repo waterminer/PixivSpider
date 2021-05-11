@@ -1,3 +1,5 @@
+import datetime
+
 from src import connect
 from src import data
 
@@ -8,11 +10,16 @@ def menu_2():
     if i == 0:
         exit(0)
     elif i == 1:
+        temp = input("请输入要爬取的日期(默认：爬取当天最新榜单)") or 0
+        date = temp
         temp = int(input("请选择爬取页数:(1~6,默认为2)\n一页50个结果\n最大是6，为了虫虫们的未来！\n") or 2)
         if (temp >= 1) & (temp <= 6):
             print("开始爬取日榜数据")
             num = temp
-            database = data.get_rank(proxy, num)
+            if date != 0:
+                database = data.get_rank(proxy, num, date)
+            else:
+                database = data.get_rank(proxy, num)
             temp = int(input("当遇到图集时，是否要爬取该图集所有图片?（默认:否）\n1.是\n2.否\n") or 2)
             if temp == 1:
                 num = 1
@@ -29,7 +36,8 @@ def menu_2():
         temp = input("请输入要下载的图片：(图片ID)\n")
         artworks_id = str(temp)
         data.get_picture_source(artworks_id, proxy)
-
+    else:
+        exit(0)
 
 """
 def menu():

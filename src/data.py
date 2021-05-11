@@ -7,7 +7,7 @@ import os
 import re
 import json
 
-time_zone = pytz.timezone('Asia/Tokyo')
+time_zone = pytz.timezone('Asia/Shanghai')
 now = datetime.now(time_zone)
 path = './Downloads'
 # 提取规则
@@ -26,7 +26,7 @@ def get_date_now():
     if time_temp < 12:
         date_now = datetime(now.year, now.month, now.day - 2)
     else:
-        date_now = datetime(now.year, now.month, now.day)
+        date_now = datetime(now.year, now.month, now.day - 1)
     date_now = date_now.strftime("%Y%m%d")
     return date_now
 
