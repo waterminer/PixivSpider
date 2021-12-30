@@ -5,6 +5,7 @@ import os
 import re
 import json
 
+# 定义常量
 now = datetime.now()
 time = now.strftime("%Y%m%d_%H%M%S")
 date_now = now.strftime("%Y%m%d")
@@ -64,6 +65,7 @@ def save(picture, name, ext):
         fp.close()
 
 
+# 下载榜单图片的方法，包含一个是否下载整个图集的开关
 def get_rank_picture_source(database, proxies, switch=0):
     for artworks_id in database:
         url = 'https://www.pixiv.net/ajax/illust/' + artworks_id + '/pages?lang=zh'
@@ -89,6 +91,7 @@ def get_rank_picture_source(database, proxies, switch=0):
             exit(1)
 
 
+# 下载原图的方法
 def get_picture_source(artworks_id, proxies):
     artworks_id = str(artworks_id)
     url = 'https://www.pixiv.net/ajax/illust/' + artworks_id + '/pages?lang=zh'
@@ -99,5 +102,5 @@ def get_picture_source(artworks_id, proxies):
         url = urls_list['urls']['original']
         ext = re.findall(ext_re, url)[0]
         picture = connect.ask_url(url, proxies)
-        save(picture.content, artworks_id + "_" + str(i),ext)
+        save(picture.content, artworks_id + "_" + str(i), ext)
         i = i + 1
