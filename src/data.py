@@ -20,7 +20,7 @@ id_re = re.compile(r'data-id="(.*?)"')
 original_re = re.compile(r'"original":"(.*?)"')
 ext_re = re.compile(r'(jpg|png|gif)')
 
-
+# 获取榜单的方法
 def get_rank(proxies, num, database={}):
     for i in range(1, num + 1):
         i = str(i)
@@ -65,7 +65,7 @@ def save(picture, name, ext):
         fp.close()
 
 
-# 下载榜单图片的方法，包含一个是否下载整个图集的开关
+# 下载榜单图片的方法
 def get_rank_picture_source(database, proxies, switch=0):
     for artworks_id in database:
         url = 'https://www.pixiv.net/ajax/illust/' + artworks_id + '/pages?lang=zh'
