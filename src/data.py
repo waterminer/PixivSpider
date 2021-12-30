@@ -98,6 +98,6 @@ def get_picture_source(artworks_id, proxies):
     for urls_list in json_obj['body']:
         url = urls_list['urls']['original']
         ext = re.findall(ext_re, url)[0]
-        picture = connect.ask_url(url, proxies, ext)
-        save(picture.content, artworks_id + "_" + str(i))
+        picture = connect.ask_url(url, proxies)
+        save(picture.content, artworks_id + "_" + str(i),ext)
         i = i + 1

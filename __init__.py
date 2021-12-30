@@ -2,7 +2,7 @@ from src import connect
 from src import data
 
 
-def menu_2():
+def menu():
     temp = input("请选择爬虫模式：(0~2)\n1.爬取日榜\n2.下载图片\n0.退出\n") or 0
     i = int(temp)
     if i == 0:
@@ -20,18 +20,19 @@ def menu_2():
                 num = 0
             else:
                 print("选项错误！\n")
-                menu_2()
+                menu()
             data.get_rank_picture_source(database, proxy, num)
         else:
             print("输入的值超出范围！\n")
-            menu_2()
+            menu()
     elif i == 2:
         temp = input("请输入要下载的图片：(图片ID)\n")
         artworks_id = str(temp)
         data.get_picture_source(artworks_id, proxy)
 
-
-def menu():
+'''
+#废弃的菜单
+def menu2():
     # 登录菜单
     temp = input('请选择登录方式（0～1）\n1.账号登录\n2.cookie登录\n3.游客登录\n0.退出\n')
     i = int(temp)
@@ -49,12 +50,12 @@ def menu():
     else:
         print("错误输入！")
         exit(1)
-
+'''
 
 if __name__ == '__main__':
     print("正在初始化")
     connect.get_config()
     proxy = connect.use_proxy()
     connect.cookies_login()
-    menu_2()
+    menu()
     print("done!")
