@@ -30,6 +30,7 @@ def menu():
         artworks_id = str(temp)
         data.get_picture_source(artworks_id, proxy)
 
+
 '''
 #废弃的菜单
 def menu2():
@@ -51,6 +52,7 @@ def menu2():
         print("错误输入！")
         exit(1)
 '''
+
 
 if __name__ == '__main__':
     print("正在初始化")

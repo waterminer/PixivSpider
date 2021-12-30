@@ -20,6 +20,7 @@ id_re = re.compile(r'data-id="(.*?)"')
 original_re = re.compile(r'"original":"(.*?)"')
 ext_re = re.compile(r'(jpg|png|gif)')
 
+
 # 获取榜单的方法
 def get_rank(proxies, num, database={}):
     for i in range(1, num + 1):
@@ -52,6 +53,7 @@ def get_rank(proxies, num, database={}):
     return database
 
 
+# 保存图片的方法
 def save(picture, name, ext):
     print("正在保存这张图： " + name)
     if not os.path.exists(path):
