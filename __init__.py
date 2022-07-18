@@ -56,7 +56,7 @@ def menu2():
 
 if __name__ == '__main__':
     print("正在初始化")
-    connect.get_config()
+    connect.Config.get_config()
     proxy = connect.use_proxy()
     connect.cookies_login()
     menu()

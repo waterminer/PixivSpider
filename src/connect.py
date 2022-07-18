@@ -5,7 +5,6 @@ import requests
 from requests.exceptions import ConnectionError
 from requests.exceptions import ProxyError
 
-config = configparser.ConfigParser()
 config_raw = configparser.RawConfigParser()
 config_path = "./config/connect.config"
 base_url = "https://www.pixiv.net"
@@ -19,25 +18,27 @@ req = requests.session()
 
 
 # 初始化config文件
-def get_config():
-    if not os.path.exists("./config/connect.config"):
-        if not os.path.exists("./config"):
-            os.makedirs("./config")
-        config['proxy'] = {
-            'host': '127.0.0.1', 'port': '0000'
-        }
-        config['account'] = {
-            'pixiv_id': '这项不必填写', 'password': '这项不必填写'
-        }
-        config['cookie'] = {
-            'cookie': ''
-        }
-        with open(config_path, 'w', encoding='utf-8') as file:
-            config.write(file)
-        input('请配置设置文件："config/connect.config"') or 0
-        exit(1)
-    else:
-        return config
+class Config():
+    def get_config(self=None, config=None):
+        if not os.path.exists("./config/connect.config"):
+            if not os.path.exists("./config"):
+                os.makedirs("./config")
+            configparser.ConfigParser()['proxy'] = {
+                'host': '127.0.0.1', 'port': '0000'
+            }
+            configparser.ConfigParser()['account'] = {
+                'pixiv_id': '这项不必填写', 'password': '这项不必填写'
+            }
+            configparser.ConfigParser()['cookie'] = {
+                'cookie': ''
+            }
+            with open(config_path, 'w', encoding='utf-8') as file:
+                configparser.ConfigParser().write(file)
+            input('请配置设置文件："config/connect.config"') or 0
+            exit(1)
+        else:
+            return config
+        config = self.get_config()
 
 
 # 尝试利用代理网络连接pixiv,返回一个proxy（其实是懒得用类来封装了）
@@ -66,10 +67,21 @@ def use_proxy():
             exit(1)
 
 
+def cookies_login():
+    config_raw.read("./config/connect.config", encoding='utf-8')
+    cookie = config_raw['cookie']['cookie']
+    headers['cookie'] = cookie.encode('utf-8')
+    return
+
+
+def ask_url(url, proxies):
+    html = req.get(url, headers=headers, proxies=proxies)
+    return html
+
+
+'''
 # 以下代码暂时废弃（一脚踢google验证钢板上，除非有大佬能解决这个问题)
 def account_login(proxies):
-    print('该功能开发中...')
-    '''
     print('正在尝试登录pixiv')
     data_re = req.get(login_url, headers=headers, proxies=proxies)
     login_soup = BeautifulSoup(data_re.text, 'lxml')
@@ -86,16 +98,4 @@ def account_login(proxies):
     print(data_re.test)
     config['cookie']['device_token'] = data_re.cookies['device_token']
     config['cookie']['PHPSESSID'] = data_re.cookies['PHPSESSID']
-    '''
-
-
-def cookies_login():
-    config_raw.read("./config/connect.config", encoding='utf-8')
-    cookie = config_raw['cookie']['cookie']
-    headers['cookie'] = cookie.encode('utf-8')
-    return
-
-
-def ask_url(url, proxies):
-    html = req.get(url, headers=headers, proxies=proxies)
-    return html
+'''
