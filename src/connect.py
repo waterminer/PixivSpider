@@ -1,6 +1,5 @@
 import configparser
 import os
-from bs4 import BeautifulSoup
 import requests
 from requests.exceptions import ConnectionError
 from requests.exceptions import ProxyError
@@ -66,10 +65,23 @@ def use_proxy():
             exit(1)
 
 
+def cookies_login():
+    config_raw.read("./config/connect.config", encoding='utf-8')
+    cookie = config_raw['cookie']['cookie']
+    headers['cookie'] = cookie.encode('utf-8')
+    return
+
+
+def ask_url(url, proxies):
+    html = req.get(url, headers=headers, proxies=proxies)
+    return html
+
+
 # 以下代码暂时废弃（一脚踢google验证钢板上，除非有大佬能解决这个问题)
+'''
 def account_login(proxies):
     print('该功能开发中...')
-    '''
+    
     print('正在尝试登录pixiv')
     data_re = req.get(login_url, headers=headers, proxies=proxies)
     login_soup = BeautifulSoup(data_re.text, 'lxml')
@@ -86,16 +98,6 @@ def account_login(proxies):
     print(data_re.test)
     config['cookie']['device_token'] = data_re.cookies['device_token']
     config['cookie']['PHPSESSID'] = data_re.cookies['PHPSESSID']
-    '''
+'''
 
 
-def cookies_login():
-    config_raw.read("./config/connect.config", encoding='utf-8')
-    cookie = config_raw['cookie']['cookie']
-    headers['cookie'] = cookie.encode('utf-8')
-    return
-
-
-def ask_url(url, proxies):
-    html = req.get(url, headers=headers, proxies=proxies)
-    return html

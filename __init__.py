@@ -31,6 +31,14 @@ def menu():
         data.get_picture_source(artworks_id, proxy)
 
 
+if __name__ == '__main__':
+    print("正在初始化")
+    connect.get_config()
+    proxy = connect.use_proxy()
+    connect.cookies_login()
+    print("done!")
+    menu()
+
 '''
 #废弃的菜单
 def menu2():
@@ -54,10 +62,4 @@ def menu2():
 '''
 
 
-if __name__ == '__main__':
-    print("正在初始化")
-    connect.get_config()
-    proxy = connect.use_proxy()
-    connect.cookies_login()
-    menu()
-    print("done!")
+
