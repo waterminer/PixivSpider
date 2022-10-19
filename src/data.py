@@ -21,7 +21,9 @@ ext_re = re.compile(r'(jpg|png|gif)')
 
 
 # 获取榜单的方法
-def get_rank(connect, num, database={}):
+def get_rank(connect, num, database=None):
+    if database is None:
+        database = {}
     for i in range(1, num + 1):
         i = str(i)
         rank_url = 'https://www.pixiv.net/ranking.php?p=' + i
@@ -45,8 +47,9 @@ def get_rank(connect, num, database={}):
             }
             database[artworks_id] = item_data
             # # 以下用于检查输出结果
-            print("#" + rank + "\ntitle: " + title + "\nartist: " + artist + "\nid: " + artworks_id + "\ndate: " + date +
-                  "\nview: " + view + "\n")
+            # print(
+            #     "#" + rank + "\ntitle: " + title + "\nartist: " + artist + "\nid: " + artworks_id + "\ndate: " + date +
+            #     "\nview: " + view + "\n")
     return database
 
 
