@@ -1,6 +1,5 @@
 from datetime import datetime
 from bs4 import BeautifulSoup
-from src import connect
 import os
 import re
 import json
@@ -22,11 +21,11 @@ ext_re = re.compile(r'(jpg|png|gif)')
 
 
 # 获取榜单的方法
-def get_rank(proxies, num, database={}):
+def get_rank(connect, num, database={}):
     for i in range(1, num + 1):
         i = str(i)
         rank_url = 'https://www.pixiv.net/ranking.php?p=' + i
-        req = connect.ask_url(rank_url, proxies)
+        req = connect.ask_url(rank_url)
         rank_bs = BeautifulSoup(req.text, "lxml")
         for section in rank_bs.find_all("section", class_="ranking-item"):
             item = str(section)
@@ -45,11 +44,9 @@ def get_rank(proxies, num, database={}):
                 'view': view
             }
             database[artworks_id] = item_data
-            '''
-            # 以下用于检查输出结果
-            print("#" + rank + "\ntitle: " + title + "\nartist: " + artist + "\nid: " + id + "\ndate: " + date + 
-                  "\nview: " + view + "\n") 
-            '''
+            # # 以下用于检查输出结果
+            print("#" + rank + "\ntitle: " + title + "\nartist: " + artist + "\nid: " + artworks_id + "\ndate: " + date +
+                  "\nview: " + view + "\n")
     return database
 
 
@@ -68,23 +65,23 @@ def save(picture, name, ext):
 
 
 # 下载榜单图片的方法
-def get_rank_picture_source(database, proxies, switch=0):
+def get_rank_picture_source(database, connect, switch=0):
     for artworks_id in database:
         url = 'https://www.pixiv.net/ajax/illust/' + artworks_id + '/pages?lang=zh'
-        req = connect.ask_url(url, proxies)
+        req = connect.ask_url(url)
         json_obj = json.loads(json.dumps(req.json()))
         i = 0
         if switch == 0:
             url = json_obj['body'][0]['urls']['original']
             ext = re.findall(ext_re, url)[0]
-            picture = connect.ask_url(url, proxies)
+            picture = connect.ask_url(url)
             name = str(artworks_id + "_" + str(i))
             save(picture.content, name, ext)
         elif switch == 1:
             for urls_list in json_obj['body']:
                 url = urls_list['urls']['original']
                 ext = re.findall(ext_re, url)[0]
-                picture = connect.ask_url(url, proxies)
+                picture = connect.ask_url(url)
                 name = str(artworks_id + "_" + str(i))
                 save(picture.content, name, ext)
                 i = i + 1
@@ -94,15 +91,15 @@ def get_rank_picture_source(database, proxies, switch=0):
 
 
 # 下载原图的方法
-def get_picture_source(artworks_id, proxies):
+def get_picture_source(artworks_id, connect):
     artworks_id = str(artworks_id)
     url = 'https://www.pixiv.net/ajax/illust/' + artworks_id + '/pages?lang=zh'
-    req = connect.ask_url(url, proxies)
+    req = connect.ask_url(url)
     json_obj = json.loads(json.dumps(req.json()))
     i = 0
     for urls_list in json_obj['body']:
         url = urls_list['urls']['original']
         ext = re.findall(ext_re, url)[0]
-        picture = connect.ask_url(url, proxies)
+        picture = connect.ask_url(url)
         save(picture.content, artworks_id + "_" + str(i), ext)
         i = i + 1

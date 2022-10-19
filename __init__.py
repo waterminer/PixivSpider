@@ -12,7 +12,7 @@ def menu():
         if (temp >= 1) & (temp <= 6):
             print("开始爬取日榜数据")
             num = temp
-            database = data.get_rank(proxy, num)
+            database = data.get_rank(connect, num)
             temp = int(input("当遇到图集时，是否要爬取该图集所有图片?（默认:否）\n1.是\n2.否\n") or 2)
             if temp == 1:
                 num = 1
@@ -21,21 +21,19 @@ def menu():
             else:
                 print("选项错误！\n")
                 menu()
-            data.get_rank_picture_source(database, proxy, num)
+            data.get_rank_picture_source(database, connect, num)
         else:
             print("输入的值超出范围！\n")
             menu()
     elif i == 2:
         temp = input("请输入要下载的图片：(图片ID)\n")
         artworks_id = str(temp)
-        data.get_picture_source(artworks_id, proxy)
+        data.get_picture_source(artworks_id, connect)
 
 
 if __name__ == '__main__':
     print("正在初始化")
-    connect.get_config()
-    proxy = connect.use_proxy()
-    connect.cookies_login()
+    connect = connect.Connect()
     print("done!")
     menu()
 
