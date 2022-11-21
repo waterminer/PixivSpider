@@ -35,27 +35,29 @@ def get_config():
         return config
 
 
-# 尝试利用代理网络连接pixiv,返回一个proxy（其实是懒得用类来封装了）
-def get_proxy():
-    config.read(config_path, encoding='utf-8')
-    host = config['proxy']['host']
-    port = ':' + config['proxy']['port']
-    proxy_host = host + port
-    proxies = {'http': proxy_host, 'https': proxy_host}  # 左边那堆玩意儿是拿来组装代理地址的
-    return proxies
-
-
+# 总算是封装了一个类，每次链接都被迫要往参数里填代理实在是太蠢了
 class Connect:
+
+    # 尝试利用代理网络连接pixiv,返回一个proxies
+    def _get_proxy(self):
+        config.read(config_path, encoding='utf-8')
+        host = config['proxy']['host']
+        port = ':' + config['proxy']['port']
+        proxy_host = host + port
+        self._proxies = {'http': proxy_host, 'https': proxy_host}
+        return
+
     def __init__(self):
-        self.cookie = None
-        self.proxies = get_proxy()
-        self.headers = {
+        self._proxies = None
+        self._cookie = None
+        self._get_proxy()
+        self._headers = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0",
             'referer': 'https://www.pixiv.net/'
         }
         print("正在尝试连接pixiv...")
         try:
-            test = requests.get(base_url, headers=self.headers, proxies=self.proxies)
+            test = requests.get(base_url, headers=self._headers, proxies=self._proxies)
         except ProxyError:
             print("连接失败，请检查网络连接或代理配置！")
             exit(1)
@@ -71,14 +73,15 @@ class Connect:
                 print("请求失败:返回码_", re_code)
                 exit(1)
 
+    # 实际上并没有用到的cookies
     def cookies_login(self):
         config_raw.read("./config/connect.config", encoding='utf-8')
-        self.cookie = config_raw['cookie']['cookie']
-        self.headers['cookie'] = self.cookie.encode('utf-8')
+        self._cookie = config_raw['cookie']['cookie']
+        self._headers['cookie'] = self._cookie.encode('utf-8')
         return
 
     def ask_url(self, url):
-        html = req.get(url, headers=self.headers, proxies=self.proxies)
+        html = req.get(url, headers=self._headers, proxies=self._proxies)
         return html
 
 

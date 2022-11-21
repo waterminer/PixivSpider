@@ -34,6 +34,7 @@ def menu():
 if __name__ == '__main__':
     print("正在初始化")
     connect = connect.Connect()
+    connect.cookies_login()
     print("done!")
     menu()
 
